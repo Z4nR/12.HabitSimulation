@@ -5,16 +5,22 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.CheckBox
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dicoding.habitapp.R
 import com.dicoding.habitapp.data.Habit
+import com.dicoding.habitapp.setting.SettingsActivity
 import com.dicoding.habitapp.ui.ViewModelFactory
 import com.dicoding.habitapp.ui.add.AddHabitActivity
+import com.dicoding.habitapp.ui.detail.DetailHabitActivity
+import com.dicoding.habitapp.ui.random.RandomHabitActivity
 import com.dicoding.habitapp.utils.Event
+import com.dicoding.habitapp.utils.HABIT_ID
 import com.dicoding.habitapp.utils.HabitSortType
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -23,6 +29,10 @@ class HabitListActivity : AppCompatActivity() {
 
     private lateinit var recycler: RecyclerView
     private lateinit var viewModel: HabitListViewModel
+
+    private val habitAdapter: HabitAdapter by lazy {
+        HabitAdapter(::onHabitClick)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,13 +45,28 @@ class HabitListActivity : AppCompatActivity() {
         }
 
         //TODO 6 : Initiate RecyclerView with LayoutManager
+        recycler = findViewById(R.id.rv_habit)
+        recycler.adapter = habitAdapter
+        recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        recycler.setHasFixedSize(true)
 
         initAction()
+        setFabClick()
 
         val factory = ViewModelFactory.getInstance(this)
         viewModel = ViewModelProvider(this, factory).get(HabitListViewModel::class.java)
 
         //TODO 7 : Submit pagedList to adapter and update database when onCheckChange
+        viewModel.habits.observe(this, {
+            habitAdapter.submitList(it)
+        })
+
+    }
+
+    private fun onHabitClick(habit: Habit) {
+        val intent = Intent(this, DetailHabitActivity::class.java)
+        intent.putExtra(HABIT_ID, habit.id)
+        startActivity(intent)
     }
 
     //TODO 15 : Fixing bug : Menu not show and SnackBar not show when list is deleted using swipe
@@ -56,12 +81,35 @@ class HabitListActivity : AppCompatActivity() {
         }.show()
     }
 
+    private fun setFabClick() {
+        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
+            val addIntent = Intent(this, AddHabitActivity::class.java)
+            startActivity(addIntent)
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        return true
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return true
+        return when (item.itemId) {
+            R.id.action_settings -> {
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            R.id.action_random -> {
+                val intent = Intent(this, RandomHabitActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            R.id.action_filter -> {
+                showFilteringPopUpMenu()
+                true
+            } else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun showFilteringPopUpMenu() {
