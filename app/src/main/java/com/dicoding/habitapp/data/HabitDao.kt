@@ -24,6 +24,6 @@ interface HabitDao {
     @Delete
     fun deleteHabit(habits: Habit)
 
-    @Query("update habits set priorityLevel = :level")
+    @Query("select * from habits where priorityLevel = :level")
     fun getRandomHabitByPriorityLevel(level: String): LiveData<Habit>
 }
