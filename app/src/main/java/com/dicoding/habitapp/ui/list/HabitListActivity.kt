@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.CheckBox
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -60,6 +61,8 @@ class HabitListActivity : AppCompatActivity() {
         viewModel.habits.observe(this, {
             habitAdapter.submitList(it)
         })
+
+        viewModel.snackbarText.observe(this, Observer(this::showSnackBar))
 
     }
 
