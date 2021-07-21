@@ -11,6 +11,8 @@ import com.dicoding.habitapp.utils.HABIT
 
 class CountDownActivity : AppCompatActivity() {
 
+    private var minuteFocus: Long = System.currentTimeMillis()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_count_down)
@@ -23,14 +25,18 @@ class CountDownActivity : AppCompatActivity() {
         val viewModel = ViewModelProvider(this).get(CountDownViewModel::class.java)
 
         //TODO 10 : Set initial time and observe current time. Update button state when countdown is finished
+        viewModel.setInitialTime(minuteFocus)
         viewModel.currentTimeString.observe(this, {
             it
+        })
+        viewModel.eventCountDownFinish.observe(this, {
+            updateButtonState(it)
         })
 
         //TODO 13 : Start and cancel One Time Request WorkManager to notify when time is up.
 
         findViewById<Button>(R.id.btn_start).setOnClickListener {
-
+            viewModel.startTimer()
         }
 
         findViewById<Button>(R.id.btn_stop).setOnClickListener {
