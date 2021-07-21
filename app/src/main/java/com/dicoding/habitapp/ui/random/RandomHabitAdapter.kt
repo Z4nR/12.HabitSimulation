@@ -3,6 +3,9 @@ package com.dicoding.habitapp.ui.random
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.dicoding.habitapp.R
 import com.dicoding.habitapp.data.Habit
@@ -39,9 +42,22 @@ class RandomHabitAdapter(
     inner class PagerViewHolder internal constructor(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
         //TODO 14 : Create view and bind data to item view
+        private val pagerTitle: TextView = itemView.findViewById(R.id.pager_tv_title)
+        private val pagerStartTime: TextView = itemView.findViewById(R.id.pager_tv_start_time)
+        private val pagerPriorityLevel : ImageView = itemView.findViewById(R.id.pager_priority_level)
+        private val pagerMinute : TextView = itemView.findViewById(R.id.pager_tv_minutes)
+        private val btnCountDown : Button = itemView.findViewById(R.id.btn_open_count_down)
 
         fun bind(pageType: PageType, pageData: Habit) {
-
+            pagerTitle.text = pageData.title
+            pagerStartTime.text = pageData.startTime
+            pagerMinute.text = pageData.minutesFocus.toString()
+            when (pageType) {
+                PageType.HIGH -> pagerPriorityLevel.setImageResource(R.drawable.ic_priority_high)
+                PageType.MEDIUM -> pagerPriorityLevel.setImageResource(R.drawable.ic_priority_medium)
+                PageType.LOW -> pagerPriorityLevel.setImageResource(R.drawable.ic_priority_low)
+            }
+            btnCountDown.setOnClickListener { onClick(pageData) }
         }
     }
 }
