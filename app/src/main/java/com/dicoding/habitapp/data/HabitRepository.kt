@@ -48,7 +48,11 @@ class HabitRepository(private val habitDao: HabitDao, private val executor: Exec
     }
 
     fun insertHabit(newHabit: Habit): Long {
-        return habitDao.insertHabit(newHabit)
+        var habit = 0L
+        executor.execute {
+            habit = habitDao.insertHabit(newHabit)
+        }
+        return habit
     }
 
     fun deleteHabit(habit: Habit) {
