@@ -27,7 +27,7 @@ class CountDownActivity : AppCompatActivity() {
         //TODO 10 : Set initial time and observe current time. Update button state when countdown is finished
         viewModel.setInitialTime(minuteFocus)
         viewModel.currentTimeString.observe(this, {
-            it
+
         })
         viewModel.eventCountDownFinish.observe(this, {
             updateButtonState(it)
