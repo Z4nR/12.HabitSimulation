@@ -5,13 +5,18 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.dicoding.habitapp.R
 import com.dicoding.habitapp.data.Habit
+import com.dicoding.habitapp.notification.NotificationWorker
 import com.dicoding.habitapp.utils.HABIT
+import com.dicoding.habitapp.utils.NOTIFICATION_CHANNEL_ID
+import com.dicoding.habitapp.utils.NOTIF_UNIQUE_WORK
+import java.util.concurrent.TimeUnit
 
 class CountDownActivity : AppCompatActivity() {
-
-    private var minuteFocus: Long = System.currentTimeMillis()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,12 +27,25 @@ class CountDownActivity : AppCompatActivity() {
 
         findViewById<TextView>(R.id.tv_count_down_title).text = habit.title
 
+        val currentTime = findViewById<TextView>(R.id.tv_count_down)
+
+        val minuteFocus = habit.minutesFocus
+
+        val workManager = WorkManager.getInstance(applicationContext)
+        val dataInput = Data.Builder()
+            .putString(NOTIFICATION_CHANNEL_ID, NOTIF_UNIQUE_WORK)
+            .build()
+        val switchReminder = OneTimeWorkRequest.Builder(NotificationWorker::class.java)
+            .setInitialDelay(minuteFocus, TimeUnit.MINUTES)
+            .setInputData(dataInput)
+            .build()
+
         val viewModel = ViewModelProvider(this).get(CountDownViewModel::class.java)
 
         //TODO 10 : Set initial time and observe current time. Update button state when countdown is finished
         viewModel.setInitialTime(minuteFocus)
         viewModel.currentTimeString.observe(this, {
-
+            currentTime.text = it
         })
         viewModel.eventCountDownFinish.observe(this, {
             updateButtonState(it)
@@ -36,11 +54,11 @@ class CountDownActivity : AppCompatActivity() {
         //TODO 13 : Start and cancel One Time Request WorkManager to notify when time is up.
 
         findViewById<Button>(R.id.btn_start).setOnClickListener {
-            viewModel.startTimer()
+            workManager.enqueue(switchReminder)
         }
 
         findViewById<Button>(R.id.btn_stop).setOnClickListener {
-
+            workManager.cancelWorkById(switchReminder.id)
         }
     }
 
