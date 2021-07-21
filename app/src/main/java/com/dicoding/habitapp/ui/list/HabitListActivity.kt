@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.CheckBox
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.Observer
@@ -59,6 +58,7 @@ class HabitListActivity : AppCompatActivity() {
 
         //TODO 7 : Submit pagedList to adapter and update database when onCheckChange
         viewModel.habits.observe(this, {
+            habitAdapter.notifyDataSetChanged()
             habitAdapter.submitList(it)
         })
 
