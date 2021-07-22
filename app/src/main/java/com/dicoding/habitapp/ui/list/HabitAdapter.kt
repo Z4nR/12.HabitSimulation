@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.dicoding.habitapp.R
 import com.dicoding.habitapp.data.Habit
-import com.dicoding.habitapp.ui.random.RandomHabitAdapter
 
 class HabitAdapter(
     private val onClick: (Habit) -> Unit
