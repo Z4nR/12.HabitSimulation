@@ -12,6 +12,7 @@ import com.dicoding.habitapp.R
 import com.dicoding.habitapp.data.Habit
 import com.dicoding.habitapp.notification.NotificationWorker
 import com.dicoding.habitapp.utils.HABIT
+import com.dicoding.habitapp.utils.HABIT_ID
 import com.dicoding.habitapp.utils.NOTIFICATION_CHANNEL_ID
 import com.dicoding.habitapp.utils.NOTIF_UNIQUE_WORK
 import java.util.concurrent.TimeUnit
@@ -33,6 +34,7 @@ class CountDownActivity : AppCompatActivity() {
 
         val workManager = WorkManager.getInstance(applicationContext)
         val dataInput = Data.Builder()
+            .putInt(HABIT_ID, habit.id)
             .putString(NOTIFICATION_CHANNEL_ID, NOTIF_UNIQUE_WORK)
             .build()
         val switchReminder = OneTimeWorkRequest.Builder(NotificationWorker::class.java)

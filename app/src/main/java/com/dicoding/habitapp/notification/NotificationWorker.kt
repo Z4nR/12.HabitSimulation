@@ -44,7 +44,7 @@ class NotificationWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, p
         val builder = NotificationCompat.Builder(applicationContext, HABIT_ID)
             .setSmallIcon(R.drawable.ic_date)
             .setContentTitle(habitTitle)
-            .setContentText("You have HABIT for this time. Ikuzoooo!!!!!")
+            .setContentText("Habit is over. Time to rest")
             .setColor(ContextCompat.getColor(applicationContext, android.R.color.transparent))
             .setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
             .setContentIntent(pendingIntent)
