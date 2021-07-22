@@ -47,8 +47,6 @@ class HabitListActivity : AppCompatActivity() {
         //TODO 6 : Initiate RecyclerView with LayoutManager
         recycler = findViewById(R.id.rv_habit)
         recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        recycler.setHasFixedSize(true)
-        recycler.adapter = habitAdapter
 
         initAction()
         setFabClick()
@@ -60,6 +58,7 @@ class HabitListActivity : AppCompatActivity() {
         viewModel.habits.observe(this, {
             habitAdapter.submitList(it)
             habitAdapter.notifyDataSetChanged()
+            recycler.adapter = habitAdapter
         })
 
         viewModel.snackbarText.observe(this, Observer(this::showSnackBar))
