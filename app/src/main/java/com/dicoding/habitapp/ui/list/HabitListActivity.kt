@@ -46,9 +46,9 @@ class HabitListActivity : AppCompatActivity() {
 
         //TODO 6 : Initiate RecyclerView with LayoutManager
         recycler = findViewById(R.id.rv_habit)
-        recycler.adapter = habitAdapter
         recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recycler.setHasFixedSize(true)
+        recycler.adapter = habitAdapter
 
         initAction()
         setFabClick()
@@ -58,8 +58,8 @@ class HabitListActivity : AppCompatActivity() {
 
         //TODO 7 : Submit pagedList to adapter and update database when onCheckChange
         viewModel.habits.observe(this, {
-            habitAdapter.notifyDataSetChanged()
             habitAdapter.submitList(it)
+            habitAdapter.notifyDataSetChanged()
         })
 
         viewModel.snackbarText.observe(this, Observer(this::showSnackBar))
